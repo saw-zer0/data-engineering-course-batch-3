@@ -5,8 +5,13 @@ Connects to the ride_share database and prints the results of the three
 aggregation questions (Q6, Q7, Q8) from the Week 1 SQL assignment.
 """
 
+import os
 import logging
 import psycopg2
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ── Logging setup — same pattern as the Python pre-read ──────────────────
 logging.basicConfig(
@@ -22,21 +27,64 @@ logger = logging.getLogger(__name__)
 
 # ── Database config ────────────────────────────────────────────────────────
 DB_CONFIG = dict(
-    host="localhost", port=5432,
-    dbname="ride_share", user="postgres", password="postgres"
+    host=os.getenv("db_host"),
+    port=os.getenv("db_port"),
+    dbname=os.getenv("db_name"),
+    user=os.getenv("db_user"),
+    password=os.getenv("db_password")
 )
 
 # TODO: fill in each query to match Q6 / Q7 / Q8 from sql_assignment.md
 REVENUE_BY_CITY_QUERY = """
     -- Q6: pickup_city, total_rides, total_revenue, avg_fare
+
+    SELECT 
+        r.pickup_city ,
+        count(*) AS total_rides,
+        sum(r.fare_amount) AS total_revenue,
+        avg(r.fare_amount)::numeric(10,2) AS avg_revenue
+    FROM
+        rides r
+    GROUP BY
+        pickup_city
+    ORDER BY
+        total_revenue DESC ;
+
 """
 
 LOYALTY_BONUS_QUERY = """
     -- Q7: driver_name, completed_rides — more than 100 completed rides
+
+    SELECT 
+        driver_name,
+        count(*) AS completed_rides
+    FROM 
+        rides r
+    WHERE
+        r.ride_status = 'completed'
+    GROUP BY
+        driver_name
+    HAVING
+        count(*) > 100
+    ORDER BY
+        completed_rides DESC ;
+
 """
 
 OUTCOMES_BY_STATUS_QUERY = """
     -- Q8: ride_status, ride_count, avg_distance_km
+
+    SELECT 
+        r.ride_status,
+        count(*) AS ride_count,
+        avg(r.ride_distance_km)::NUMERIC(10, 2) AS avg_distance_km
+    FROM 
+        rides r
+    GROUP BY
+        r.ride_status
+    ORDER BY
+        ride_count DESC ;
+
 """
 
 
