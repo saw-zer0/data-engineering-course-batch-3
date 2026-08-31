@@ -97,6 +97,7 @@ SELECT
 	) AS running_total
 FROM trips t
 LEFT JOIN drivers d ON t.driver_id = d.driver_id
+WHERE t.status='completed'
 ORDER BY driver_name, t.requested_at ;
 
 
