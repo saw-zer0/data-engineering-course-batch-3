@@ -16,6 +16,7 @@ env/
 
 # Logs (e.g. pipeline.log from assignment scripts)
 *.log
+logs/
 
 # OS / editor junk
 .DS_Store
