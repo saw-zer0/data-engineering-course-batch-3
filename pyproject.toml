@@ -18,3 +18,6 @@ data-engineering-course-batch-3 = "data_engineering_course_batch_3:main"
 [build-system]
 requires = ["uv_build>=0.12.1,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv]
+package = false
